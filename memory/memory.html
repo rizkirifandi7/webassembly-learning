@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Memory</title>
+	</head>
+	<body>
+		<p>Hello World</p>
+
+		<script>
+			var memory = new WebAssembly.Memory({ initial: 256, maximum: 512 });
+
+			var exports;
+			WebAssembly.instantiateStreaming(fetch("memory.wasm"), {
+				js: {
+					mem: memory,
+				},
+			}).then((results) => {
+				exports = results.instance.exports;
+				memory = results.instance.exports.memory;
+			});
+
+			function run_wasm() {
+				var arr = new Uint32Array(memory.buffer);
+				for (var i = 0; i < 10; i++) {
+					arr[i] = i * 2;
+				}
+
+				var sum = exports.acumulate(0, 10);
+
+				document.getElementById("ret").innerText += `${sum}\n`;
+			}
+
+			function get_string() {
+				var ptr = exports.getString();
+				var bytes = new Uint8Array(memory.buffer, ptr);
+				var strlen = 0;
+				while (bytes[strlen] !== 0) {
+					strlen++;
+				}
+
+				var str = new TextDecoder("utf-8").decode(bytes.slice(0, strlen));
+
+				console.log(str);
+				navigator.clipboard.writeText(str);
+			}
+		</script>
+
+		<input type="number" id="a" />
+		<button onclick="run_wasm()">Click me</button>
+		<button onclick="get_string()">Copy String</button>
+		<p id="ret"></p>
+	</body>
+</html>

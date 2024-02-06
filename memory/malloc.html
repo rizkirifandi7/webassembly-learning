@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Memory</title>
+	</head>
+	<body>
+		<p>Hello World</p>
+
+		<script>
+			var memory = new WebAssembly.Memory({ initial: 256, maximum: 512 });
+
+			var exports;
+			WebAssembly.instantiateStreaming(fetch("malloc.wasm"), {
+				js: {
+					mem: memory,
+				},
+				env: {
+					emscripten_resize_heap: memory.grow,
+				},
+			}).then((results) => {
+				exports = results.instance.exports;
+				memory = results.instance.exports.memory;
+			});
+
+			function run_wasm() {
+				var arr = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+				var ptr = encodeArray(arr, 11, 4);
+
+				var sum = exports.acumulate(ptr, 11);
+
+				exports.wasmfree(ptr);
+
+				document.querySelector("#ret").innerText += `${sum}\n`;
+			}
+
+			function get_string() {
+				var str = decodeString(exports.getString());
+				console.log(str);
+				navigator.clipboard.writeText(str);
+			}
+
+			function encodeArray(arr, len, sizeof = 1) {
+				var ptr;
+				var out;
+				if (sizeof == 8) {
+					ptr = exports.wasmmalloc(len * 8);
+					out = new BigUint64Array(memory.buffer, ptr);
+				} else if (sizeof == 4) {
+					ptr = exports.wasmmalloc(len * 4);
+					out = new Uint32Array(memory.buffer, ptr);
+				} else {
+					ptr = exports.wasmmalloc(len * 2);
+					out = new Uint8Array(memory.buffer, ptr);
+				}
+
+				for (var i = 0; i < len; i++) {
+					out[i] = arr[i];
+				}
+
+				return ptr;
+			}
+
+			function decodeArray(ptr, len) {
+				return new Uint8Array(memory.buffer).slice(ptr, ptr + len);
+			}
+
+			function decodeString(ptr, len) {
+				return new TextDecoder("utf-8").decode(decodeArray(ptr, len));
+			}
+
+			function decodeString(ptr) {
+				var bytes = new Uint8Array(memory.buffer, ptr);
+				var strlen = 0;
+				while (bytes[strlen] !== 0) {
+					strlen++;
+				}
+
+				return new TextDecoder("utf-8").decode(bytes.slice(0, strlen));
+			}
+		</script>
+
+		<input type="number" id="a" />
+		<button onclick="run_wasm()">Click me</button>
+		<button onclick="get_string()">Copy String</button>
+		<p id="ret"></p>
+	</body>
+</html>
