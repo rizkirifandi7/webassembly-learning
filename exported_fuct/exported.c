@@ -1,4 +1,4 @@
-#include <emscripten.h>
+#include </emscripten.h>
 #include <stdlib.h>
 
 extern unsigned int curTime();
