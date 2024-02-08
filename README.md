@@ -11,9 +11,7 @@ Program ini merupakan pembelajaran sederhana mengenai WebAssembly :
 
 2. C/C++ yang bisa di install di link berikut :
 
-  ```bash
-  https://code-visualstudio-com.translate.goog/docs/languages/cpp?_x_tr_sl=en&_x_tr_tl=id&_x_tr_hl=id&_x_tr_pto=tc
-  ```
+<a> https://code-visualstudio-com.translate.goog/docs/languages/cpp?_x_tr_sl=en&_x_tr_tl=id&_x_tr_hl=id&_x_tr_pto=tc</a>
 
 ## Instalasi
 
