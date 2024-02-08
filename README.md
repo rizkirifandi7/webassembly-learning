@@ -55,8 +55,10 @@ Program ini merupakan pembelajaran sederhana mengenai WebAssembly :
   emcc hello.c -o hello.html
   ```
 4. Setelah command sebelumnya dijalankan maka akan generate beberapa file dalam folder tersebut :
+
     ![folder](./assets/1.jpeg)
 
-5. Kemudian buka file html tersebut ke browser :
+6. Kemudian buka file html tersebut ke browser :
+
    ![web](./assets/3.jpeg)
 
