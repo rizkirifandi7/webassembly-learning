@@ -5,9 +5,7 @@ Program ini merupakan pembelajaran sederhana mengenai WebAssembly :
 
 ## Prasyarat 
 
-1. Emscripten SDK yang digunakan untuk :
-- Kompilasi ke Wasm dan membuat HTML untuk menjalankan kode kita, ditambah semua kode "lem" JavaScript yang diperlukan untuk menjalankan Wasm di lingkungan web.
-- Kompilasi ke Wasm dan hanya membuat JavaScript.
+1. Emscripten SDK
 
 2. C/C++ yang bisa di install di link berikut :
 
